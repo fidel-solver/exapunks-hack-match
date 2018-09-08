@@ -329,7 +329,7 @@ void validateAssumptions(Display *display, Window window) {
     for (int y=0; y<30; ++y) {
         for (int x=0; x<30; ++x) {
             const unsigned long correctPixel = XGetPixel(xImage, x, y);
-            const int correctRed = correctPixel >> 16;
+            const int correctRed = (correctPixel & ASSUMED_XIMAGE_RED_MASK) >> 16;
             const int correctGreen = (correctPixel & ASSUMED_XIMAGE_GREEN_MASK) >> 8;
             const int correctBlue = (correctPixel & ASSUMED_XIMAGE_BLUE_MASK);
 
