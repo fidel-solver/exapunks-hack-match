@@ -34,7 +34,7 @@ const int ASSUMED_XIMAGE_BITS_PER_PIXEL = 32;
 const int ASSUMED_XIMAGE_RED_MASK = 16711680;
 const int ASSUMED_XIMAGE_GREEN_MASK = 65280;
 const int ASSUMED_XIMAGE_BLUE_MASK = 255;
-const int ASSUMED_XIMAGE_PIXEL_PAD = 0;
+// const int ASSUMED_XIMAGE_PIXEL_PAD = 0;
 const int ITEM_SIZE = 60;
 const int BOARD_PIXEL_WIDTH = Board::MAX_COLS * ITEM_SIZE;
 const int BOARD_PIXEL_HEIGHT_ITEMS = 526; // eyeballed, ~10 pixels safety from red haze. should be smaller than Board::MAX_ROWS * ITEM_SIZE;
@@ -315,16 +315,16 @@ void validateAssumptions(Display *display, Window window) {
         error = true;
     }
 
-    uint32_t testPixel;
-    memcpy(&testPixel, xImage->data, sizeof(testPixel));
-    const int pixelPad = testPixel >> 24;
-    if (pixelPad != ASSUMED_XIMAGE_PIXEL_PAD) {
-        std::cerr << "pixelPad: " << pixelPad << ", but was assumed to be: " << ASSUMED_XIMAGE_PIXEL_PAD << '\n';
-        error = true;
-    }
-    if (error) {
-        throw std::runtime_error("bad XImage format");
-    }
+//  uint32_t testPixel;
+//  memcpy(&testPixel, xImage->data, sizeof(testPixel));
+//  const int pixelPad = testPixel >> 24;
+//  if (pixelPad != ASSUMED_XIMAGE_PIXEL_PAD) {
+//      std::cerr << "pixelPad: " << pixelPad << ", but was assumed to be: " << ASSUMED_XIMAGE_PIXEL_PAD << '\n';
+//      error = true;
+//  }
+//  if (error) {
+//      throw std::runtime_error("bad XImage format");
+//  }
 
     for (int y=0; y<30; ++y) {
         for (int x=0; x<30; ++x) {
