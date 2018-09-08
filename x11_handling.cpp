@@ -166,33 +166,33 @@ int imgcmp(const void *p1, const void *p2, size_t len) {
 uint8_t dataOffsettedToItem(char* data) {
     uint32_t pixel;
     memcpy(&pixel, data, sizeof(pixel));
-    switch (pixel) {
-    case YELLOW_PIXEL:
-        if (memcmp(data, YELLOW_DATA, sizeof(YELLOW_DATA))==0) return Board::YELLOW;
-        break;
-    case GREEN_PIXEL:
-        if (memcmp(data, GREEN_DATA, sizeof(GREEN_DATA))==0) return Board::GREEN;
-        break;
-    case RED_PIXEL:
-        if (memcmp(data, RED_DATA, sizeof(RED_DATA))==0) return Board::RED;
-        break;
-    case PINK_PIXEL:
-        if (memcmp(data, PINK_DATA, sizeof(PINK_DATA))==0) return Board::PINK;
-        break;
-    case BLUE_PIXEL:
-        if (memcmp(data, BLUE_DATA, sizeof(BLUE_DATA))==0) return Board::BLUE;
-        break;
-    case YELLOW_BOMB_PIXEL:
-        return Board::YELLOW_BOMB;
-    case GREEN_BOMB_PIXEL:
-        return Board::GREEN_BOMB;
-    case RED_BOMB_PIXEL:
-        return Board::RED_BOMB;
-    case PINK_BOMB_PIXEL:
-        return Board::PINK_BOMB;
-    case BLUE_BOMB_PIXEL:
-        return Board::BLUE_BOMB;
+
+    if (pixelcmp(pixel,YELLOW_PIXEL)==0) {
+        if (imgcmp(data, YELLOW_DATA, sizeof(YELLOW_DATA))==0) return Board::YELLOW;
     }
+    else if (pixelcmp(pixel,GREEN_PIXEL)==0) {
+        if (imgcmp(data, GREEN_DATA, sizeof(GREEN_DATA))==0) return Board::GREEN;
+    }
+    else if (pixelcmp(pixel,RED_PIXEL)==0) {
+        if (imgcmp(data, RED_DATA, sizeof(RED_DATA))==0) return Board::RED;
+    }
+    else if (pixelcmp(pixel,PINK_PIXEL)==0) {
+        if (imgcmp(data, PINK_DATA, sizeof(PINK_DATA))==0) return Board::PINK;
+    }
+    else if (pixelcmp(pixel,BLUE_PIXEL)==0) {
+        if (imgcmp(data, BLUE_DATA, sizeof(BLUE_DATA))==0) return Board::BLUE;
+    }
+    else if (pixelcmp(pixel,YELLOW_BOMB_PIXEL)==0)
+        return Board::YELLOW_BOMB;
+    else if (pixelcmp(pixel,GREEN_BOMB_PIXEL)==0)
+        return Board::GREEN_BOMB;
+    else if (pixelcmp(pixel,RED_BOMB_PIXEL)==0)
+        return Board::RED_BOMB;
+    else if (pixelcmp(pixel,PINK_BOMB_PIXEL)==0)
+        return Board::PINK_BOMB;
+    else if (pixelcmp(pixel,BLUE_BOMB_PIXEL)==0)
+        return Board::BLUE_BOMB;
+
     return Board::EMPTY;
 }
 
@@ -222,7 +222,7 @@ std::optional<int> findGameYOffset(char* data) {
 std::optional<uint8_t> findPhageColumn(char* data) {
     for (uint8_t col=0; col<Board::MAX_COLS; ++col) {
         const std::size_t offset = pixelCoordToDataOffset(col*ITEM_SIZE + PHAGE_SILVER_DATA_X_OFFSET, PHAGE_SILVER_DATA_Y_OFFSET);
-        if (memcmp(data+offset, PHAGE_SILVER_DATA, sizeof(PHAGE_SILVER_DATA)) == 0) {
+        if (imgcmp(data+offset, PHAGE_SILVER_DATA, sizeof(PHAGE_SILVER_DATA)) == 0) {
             return {col};
         }
     }
@@ -234,7 +234,7 @@ uint8_t findHeld(char* data, const uint8_t phageCol) {
     const std::size_t heldOffset = pixelCoordToDataOffset(phageCol*ITEM_SIZE + PIXEL_X_OFFSET, PHAGE_HELD_Y_OFFSET);
     const uint8_t held = dataOffsettedToItem(data+heldOffset);
     const std::size_t pinkOffset = pixelCoordToDataOffset(phageCol*ITEM_SIZE + PHAGE_PINK_DATA_X_OFFSET, PHAGE_PINK_DATA_Y_OFFSET);
-    const bool foundPink = 0 == memcmp(data+pinkOffset, PHAGE_PINK_DATA, sizeof(PHAGE_PINK_DATA));
+    const bool foundPink = 0 == imgcmp(data+pinkOffset, PHAGE_PINK_DATA, sizeof(PHAGE_PINK_DATA));
     assert(foundPink == (held == Board::EMPTY));
     return held;
 }
