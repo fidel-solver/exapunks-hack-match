@@ -19,6 +19,7 @@
 namespace HackMatch {
 namespace X11Handling {
 namespace {
+const int PIXEL_FUZZ = 3;  // If your bot has trouble seeing the blocks, increase the fuzz.  Maximum practical value is around 22.
 const char *EXAPUNKS_WINDOW_NAME = "EXAPUNKS";
 const auto KEY_DELAY = std::chrono::milliseconds(17);
 const int ASSUMED_WINDOW_WIDTH = 1600;
@@ -135,6 +136,31 @@ XImage* screenShotGame(Display* display, Window window) {
         throw std::runtime_error("failed to XGetimage");
     }
     return xImage;
+}
+
+// pixelcmp returns 0 if the two pixels are similar enough.
+int pixelcmp(uint32_t p1, uint32_t p2) {
+    int r = ((p1 & ASSUMED_XIMAGE_RED_MASK)>>16) - ((p2 & ASSUMED_XIMAGE_RED_MASK)>>16);
+    int g = ((p1 & ASSUMED_XIMAGE_GREEN_MASK)>>8) - ((p2 & ASSUMED_XIMAGE_GREEN_MASK)>>8);
+    int b = (p1 & ASSUMED_XIMAGE_BLUE_MASK) - (p2 & ASSUMED_XIMAGE_BLUE_MASK);
+    if (r<0) r = -r;
+    if (g<0) g = -g;
+    if (b<0) b = -b;
+    return (r+g+b > PIXEL_FUZZ);
+}
+
+// imgcmp is a replacement for memcmp which compares sequences of pixels.
+// Returns 0 if all pixels are pairwise similar.
+int imgcmp(const void *p1, const void *p2, size_t len) {
+    const uint32_t *i1 = (const uint32_t *)p1;
+    const uint32_t *i2 = (const uint32_t *)p2;
+    size_t i = len/sizeof (uint32_t);
+    while (i--) {
+        if (pixelcmp(i1++[0], i2++[0]) != 0) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 uint8_t dataOffsettedToItem(char* data) {
