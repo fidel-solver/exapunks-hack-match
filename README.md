@@ -14,4 +14,12 @@ clang++ -O3 -Wall -Werror -Wextra -std=c++17 board.cpp x11_handling.cpp solver.c
 sudo apt install libx11-dev
 sudo apt install libxtst-dev
 ```
-Make EXAPUNKS window 1600x900, run the binary, free cheeve
+
+* Make EXAPUNKS window 1600x900
+* set controls to:
+  * left `s`
+  * right `f`
+  * tractor beam `j`
+  * swap `k`
+* run the binary
+* free cheeve
